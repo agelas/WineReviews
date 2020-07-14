@@ -12,4 +12,13 @@ The first thing I did was to see if there was any obvious correlations we in the
 "variety" just for fun. The latter three categories aren't numerical attributes, so I used sklearn's ordinal encoder to convert them into numbers. 
 Then, using a scatter matrix, it's pretty obvious again that there's nothing much there either. 
 
-tldr: Not much correlation in the dataset currently. 
+tldr: Not much correlation in the dataset currently.
+
+## K-Means Approach
+The K-Means algorithm is a pretty simple algorithm capable of clustering this kind of dataset very quickly-although perhaps not very well. There's a whole of different varieties of wines in the world and in this dataset, so I filtered out wines based on whether they had more than 4000 reviews or not, to make sure I had enough descriptions to work with. The majority of wine reviews seem to be on Chardonnays, Pinot Noirs, and Cabernet-Sauvignons, with Red Blends also making a respectable showing. 
+
+Next, I used the TfidfVectorizer from sklearn to get the important words in the dataset. Tfidf is short for term frequency-inverse document frequency. It's a numerical statistic that reflects how important a word is to a document. A word's tfidf value increases proportionally to the number of times a word appears in a description and is offset by the number of descriptions in the corpus that contain the word. I also filtered out things like punctuation marks, numbers, and words like 'flavor' which appear very frequently but don't help me narrow down what type of wine I'm looking at. I also used a stemmer so a word and its plural/possessive are treated the same.
+
+My first shot I decided to use 15 clusters of words to try and group the dataset, just to see what would happen. The word clusters came out ok I guess, although one small thing is that some clusters contained the name of the wine in it. I created a heat map of which wine varieties mappen to which clusters, and obviously Chardonnay mapped to the cluster with 'chardonnay' in it. I honestly don't know if that's letting the computer cheat lol. I might filter out the names from the descriptions later and see how that changes things.
+
+Next step was to analytically see if there was an optimal number of clusters. I frist tried the elbow-methid. This step took a while using straight up K-Means, so I used Mini-batch K-Means to speed up the process. I figured that since the centroids are probably going to be so small anyways (as confirmed by the silhouette scores later), mini-batch wouldn't significantly hurt my results. And the inertia from either K-Means or Mini-batch K-Means was super high regardless so again, doesn't matter which variant of K-Means. The elbow method didn't reveal that much. It was a pretty convex curve down, with no obvious elbow. So I tried a silhouette score next. That got me some K values that appeared optimal, and I ended up going with 21 clusters. 
